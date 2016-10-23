@@ -1,8 +1,9 @@
 # k-closest-elements
 Multiple algorithm implmentations for K-Closest Elements
 
-## Given Array is Sorted
-`O(log n) + O(k)`: use binary search to find the closest insert position, then find k closest elements from insert position.
+# Given Array is Sorted
+## Binary Search - O(log n) + O(k)
+Use binary search to find the closest insert position, then find k closest elements starting from insert position.
 ```cpp
 // runs a binary search on a given array, returns the insert position of a given integer
 int findInsertPosition(vector<int>& nums, int target) {
@@ -18,8 +19,8 @@ int findInsertPosition(vector<int>& nums, int target) {
     return i;
 }
 
-// runs a binary search in O(log n) and finds k closest elements in O(k).
-multiset<int> binarySearch(vector<int> nums, int target, int k) {
+// runs a binary search in O(log n) and finds k closest elements of given target in O(k).
+multiset<int> kClosestBinarySearch(vector<int> nums, int target, int k) {
     multiset<int> result;
     // sort the array
     sort(nums.begin(), nums.end());
@@ -36,6 +37,39 @@ multiset<int> binarySearch(vector<int> nums, int target, int k) {
         } else {
             result.insert(nums[j++]);
         }
+    }
+    return result;
+}
+```
+
+# Given Array is Unsorted
+## Max-Heap - O(n log k)
+Maintain a max-heap of size `k`, insert all elements with their absolute distances into the heap, when heap size exceeds `k`, run `ExtractMax` which is `O(1)`. Overrall time complexity is `O(n log k)`.
+
+```cpp
+// Comparer struct used by kClosestHeap, which determines equality by comparing pair<int, int>.first.
+struct HeapPairComparer {
+    bool operator()(const pair<int, int>& a, const pair<int, int>& b) const {
+        return a.first < b.first;
+    }
+};
+
+// uses a max-heap to find k closest elements of given target, O(n log k).
+multiset<int> kClosestHeap(vector<int> nums, int target, int k) {
+    priority_queue<int, vector<pair<int, int>>, HeapPairComparer> maxHeap;
+    multiset<int> result;
+
+    for (auto n: nums) {
+        auto pair = make_pair(abs(n - target), n);
+        maxHeap.push(pair);
+        if (maxHeap.size() > k) {
+            maxHeap.pop();
+        }
+    }
+
+    while (maxHeap.size()) {
+        result.insert(maxHeap.top().second);
+        maxHeap.pop();
     }
     return result;
 }

@@ -28,7 +28,7 @@ int findInsertPosition(vector<int>& nums, int target) {
     return i;
 }
 
-// runs a binary search in O(log n) and finds k closest elements in O(k).
+// runs a binary search in O(log n) and finds k closest elements of given target in O(k).
 multiset<int> kClosestBinarySearch(vector<int> nums, int target, int k) {
     multiset<int> result;
     // sort the array
@@ -50,14 +50,14 @@ multiset<int> kClosestBinarySearch(vector<int> nums, int target, int k) {
     return result;
 }
 
-struct HeapPairComparer
-{
-    bool operator()(const pair<int, int>& a, const pair<int, int>& b) const
-    {
+// Comparer struct used by kClosestHeap, which determines equality by comparing pair<int, int>.first.
+struct HeapPairComparer {
+    bool operator()(const pair<int, int>& a, const pair<int, int>& b) const {
         return a.first < b.first;
     }
 };
 
+// uses a max-heap to find k closest elements of given target, O(n log k).
 multiset<int> kClosestHeap(vector<int> nums, int target, int k) {
     priority_queue<int, vector<pair<int, int>>, HeapPairComparer> maxHeap;
     multiset<int> result;
@@ -85,7 +85,7 @@ void printSet(multiset<int>& set) {
 }
 
 int main() {
-    cout << "--- Sorted Array, Binary Search, O(log n) + O(k)" << endl;
+    cout << "--- Sorted Array, Binary Search, O(log n) + O(k) ---" << endl;
     vector<int> sortedNums = {1, 2, 3, 4, 6, 6, 10};
     multiset<int> result;
     
@@ -96,10 +96,12 @@ int main() {
     result = kClosestBinarySearch(sortedNums, 5, 5);
     printSet(result);
     
-    cout << "--- Unsorted Array, Max-Heap, O(log n) + O(k)" << endl;
+    cout << "--- Unsorted Array, Max-Heap, O(n log k) ---" << endl;
     vector<int> unsortedNums = {1, 6, 4, 3, 2, 6, 7, 3, 2, 9};
+    // find 3 closest element to 5
     result = kClosestHeap(unsortedNums, 3, 5);
     printSet(result);
+    // find 9 closest element to 3
     result = kClosestHeap(unsortedNums, 9, 3);
     printSet(result);
     return 0;
