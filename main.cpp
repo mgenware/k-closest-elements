@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <queue>
 
 using namespace std;
 
@@ -49,6 +50,33 @@ multiset<int> kClosestBinarySearch(vector<int> nums, int target, int k) {
     return result;
 }
 
+struct HeapPairComparer
+{
+    bool operator()(const pair<int, int>& a, const pair<int, int>& b) const
+    {
+        return a.first < b.first;
+    }
+};
+
+multiset<int> kClosestHeap(vector<int> nums, int target, int k) {
+    priority_queue<int, vector<pair<int, int>>, HeapPairComparer> maxHeap;
+    multiset<int> result;
+    
+    for (auto n: nums) {
+        auto pair = make_pair(abs(n - target), n);
+        maxHeap.push(pair);
+        if (maxHeap.size() > k) {
+            maxHeap.pop();
+        }
+    }
+    
+    while (maxHeap.size()) {
+        result.insert(maxHeap.top().second);
+        maxHeap.pop();
+    }
+    return result;
+}
+
 void printSet(multiset<int>& set) {
     for (auto n: set) {
         cout << n << " ";
@@ -66,6 +94,13 @@ int main() {
     printSet(result);
     // find 5 closest element to 5
     result = kClosestBinarySearch(sortedNums, 5, 5);
+    printSet(result);
+    
+    cout << "--- Unsorted Array, Max-Heap, O(log n) + O(k)" << endl;
+    vector<int> unsortedNums = {1, 6, 4, 3, 2, 6, 7, 3, 2, 9};
+    result = kClosestHeap(unsortedNums, 3, 5);
+    printSet(result);
+    result = kClosestHeap(unsortedNums, 9, 3);
     printSet(result);
     return 0;
 }
