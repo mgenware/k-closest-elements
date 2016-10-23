@@ -28,7 +28,7 @@ int findInsertPosition(vector<int>& nums, int target) {
 }
 
 // runs a binary search in O(log n) and finds k closest elements in O(k).
-multiset<int> binarySearch(vector<int> nums, int target, int k) {
+multiset<int> kClosestBinarySearch(vector<int> nums, int target, int k) {
     multiset<int> result;
     // sort the array
     sort(nums.begin(), nums.end());
@@ -57,14 +57,15 @@ void printSet(multiset<int>& set) {
 }
 
 int main() {
+    cout << "--- Sorted Array, Binary Search, O(log n) + O(k)" << endl;
     vector<int> sortedNums = {1, 2, 3, 4, 6, 6, 10};
     multiset<int> result;
     
     // find 4 closest element to 6
-    result = binarySearch(sortedNums, 6, 4);
+    result = kClosestBinarySearch(sortedNums, 6, 4);
     printSet(result);
     // find 5 closest element to 5
-    result = binarySearch(sortedNums, 5, 5);
+    result = kClosestBinarySearch(sortedNums, 5, 5);
     printSet(result);
     return 0;
 }
