@@ -1,6 +1,7 @@
 Given an array of `n` elements, find `k` closest elements to a `target` value.
 
 There are various ways to solve this problem:
+
 | Ordering | Algorithm               | Time Complexity |
 |----------|-------------------------|-----------------|
 | Sorted   | Binary Search           | O(k + log n)    |
