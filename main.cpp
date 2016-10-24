@@ -77,6 +77,50 @@ multiset<int> kClosestHeap(vector<int> nums, int target, int k) {
     return result;
 }
 
+// partition function used by both quickselect
+int quickselectPartition(vector<pair<int, int>>& nums, int start, int end) {
+    int pivot = nums[end].first;
+    int i = start, j = start;
+    for (; j < end; j++) {
+        if (nums[j].first <= pivot) {
+            swap(nums[i], nums[j]);
+            i++;
+        }
+    }
+    swap(nums[end], nums[i]);
+    return i;
+}
+
+// a combination of quickselect and quicksort
+void quickselect(vector<pair<int, int>>& nums, int start, int end, int k) {
+    if (start >= end) {
+        return;
+    }
+    int pivotIndex = quickselectPartition(nums, start, end);
+    if (pivotIndex < k - 1) {
+        quickselect(nums, start, pivotIndex - 1, k);
+        quickselect(nums, pivotIndex + 1, end, k);
+    } else {
+        quickselect(nums, start, pivotIndex - 1, k);
+    }
+}
+
+// uses a combination of quickselect and quicksort to find k closest elements in O(n + k log k).
+multiset<int> kClosestQuickselect(vector<int> nums, int target, int k) {
+    vector<pair<int, int>> distances(nums.size());
+    for (int i = 0; i < nums.size(); i++) {
+        distances[i] = make_pair(abs(nums[i] - target), nums[i]);
+    }
+    
+    quickselect(distances, 0, distances.size() - 1, k);
+    multiset<int> result;
+    for (int i = 0; i < k; i++) {
+        result.insert(distances[i].second);
+    }
+    return result;
+}
+
+
 void printSet(multiset<int>& set) {
     for (auto n: set) {
         cout << n << " ";
@@ -103,6 +147,14 @@ int main() {
     printSet(result);
     // find 9 closest element to 3
     result = kClosestHeap(unsortedNums, 9, 3);
+    printSet(result);
+    
+    cout << "--- Unsorted Array, Quickselect, O(n + k log k) ---" << endl;
+    // find 3 closest element to 5
+    result = kClosestQuickselect(unsortedNums, 3, 5);
+    printSet(result);
+    // find 9 closest element to 3
+    result = kClosestQuickselect(unsortedNums, 9, 3);
     printSet(result);
     return 0;
 }
