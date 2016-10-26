@@ -31,9 +31,6 @@ int findInsertPosition(vector<int>& nums, int target) {
 // runs a binary search in O(log n) and finds k closest elements of given target in O(k).
 multiset<int> kClosestBinarySearch(vector<int> nums, int target, int k) {
     multiset<int> result;
-    // sort the array
-    sort(nums.begin(), nums.end());
-
     // assume target exists and k <= nums.size()
     int idx = findInsertPosition(nums, target);
     // insert the most closest element into the set
